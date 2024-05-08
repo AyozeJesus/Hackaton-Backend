@@ -1,6 +1,7 @@
 export class Transaction {
   constructor(
-    userId,
+    transaction_id,
+    cc_num,
     merchantId,
     category,
     amount,
@@ -10,7 +11,8 @@ export class Transaction {
     transactionTime,
     expenseIncome,
   ) {
-    this.userId = userId
+    this.transaction_id = transaction_id
+    this.cc_num = cc_num
     this.merchantId = merchantId
     this.category = category
     this.amount = amount
@@ -23,7 +25,8 @@ export class Transaction {
 
   static create(data) {
     return new Transaction(
-      data.userId,
+      data.transaction_id,
+      data.cc_num,
       data.merchantId,
       data.category,
       data.amount,
@@ -43,8 +46,12 @@ export class Transaction {
     this.expenseIncome = data.expenseIncome ?? this.expenseIncome
   }
 
-  getUserId() {
-    return this.userId
+  gettransaction_id() {
+    return this.transaction_id
+  }
+
+  getCCNum() {
+    return this.cc_num
   }
 
   getMerchantId() {

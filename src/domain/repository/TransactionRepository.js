@@ -8,11 +8,11 @@ export class TransactionRepository {
       connection = await getConnection()
       const insertTransactionQuery = `
         INSERT INTO transactions 
-        (user_id, merchant_id, category, amount, transaction_num, unix_time, transaction_date, transaction_time, expense_income)
+        (cc_num, merchant_id, category, amount, transaction_num, unix_time, transaction_date, transaction_time, expense_income)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
       const {
-        userId,
+        cc_num,
         merchantId,
         category,
         amount,
@@ -24,7 +24,7 @@ export class TransactionRepository {
       } = transactionData
 
       const [insertResult] = await connection.query(insertTransactionQuery, [
-        userId,
+        cc_num,
         merchantId,
         category,
         amount,
@@ -35,7 +35,7 @@ export class TransactionRepository {
         expenseIncome,
       ])
 
-      return { transactionId: insertResult.insertId }
+      return { transaction_id: insertResult.insertId }
     } finally {
       if (connection) {
         connection.release()
@@ -43,13 +43,13 @@ export class TransactionRepository {
     }
   }
 
-  async getTransactionById(transactionId) {
+  async getTransactionByTransactionNum(transactionNum) {
     let connection
     try {
       connection = await getConnection()
       const [rows] = await connection.query(
         'SELECT * FROM transactions WHERE transaction_num = ?',
-        [transactionId],
+        [transactionNum],
       )
 
       if (rows.length === 0) {
@@ -64,14 +64,35 @@ export class TransactionRepository {
     }
   }
 
-  async updateTransaction(transactionId, updateData) {
+  async getTransactionById(transaction_id) {
+    let connection
+    try {
+      connection = await getConnection()
+      const [rows] = await connection.query(
+        'SELECT * FROM transactions WHERE transaction_id = ?',
+        [transaction_id],
+      )
+
+      if (rows.length === 0) {
+        throw generateError('Transaction not found.', 404)
+      }
+
+      return rows[0]
+    } finally {
+      if (connection) {
+        connection.release()
+      }
+    }
+  }
+
+  async updateTransaction(transaction_id, updateData) {
     let connection
     try {
       connection = await getConnection()
       const updateQuery = `
         UPDATE transactions
         SET category = ?, amount = ?, transaction_date = ?, transaction_time = ?, expense_income = ?
-        WHERE transaction_num = ?`
+        WHERE transaction_id = ?`
 
       const {
         category,
@@ -80,13 +101,14 @@ export class TransactionRepository {
         transactionTime,
         expenseIncome,
       } = updateData
+
       await connection.query(updateQuery, [
         category,
         amount,
         transactionDate,
         transactionTime,
         expenseIncome,
-        transactionId,
+        transaction_id,
       ])
     } finally {
       if (connection) {
@@ -95,13 +117,13 @@ export class TransactionRepository {
     }
   }
 
-  async deleteTransaction(transactionId) {
+  async deleteTransaction(transaction_id) {
     let connection
     try {
       connection = await getConnection()
       await connection.query(
-        'DELETE FROM transactions WHERE transaction_num = ?',
-        [transactionId],
+        'DELETE FROM transactions WHERE transaction_id = ?',
+        [transaction_id],
       )
     } finally {
       if (connection) {
@@ -110,29 +132,13 @@ export class TransactionRepository {
     }
   }
 
-  async listTransactions(userId) {
+  async listTransactions(transaction_id) {
     let connection
     try {
       connection = await getConnection()
       const [rows] = await connection.query(
-        'SELECT * FROM transactions WHERE user_id = ? ORDER BY transaction_date DESC',
-        [userId],
-      )
-      return rows
-    } finally {
-      if (connection) {
-        connection.release()
-      }
-    }
-  }
-
-  async listTransactionsByCategory(userId, category) {
-    let connection
-    try {
-      connection = await getConnection()
-      const [rows] = await connection.query(
-        'SELECT * FROM transactions WHERE user_id = ? AND category = ? ORDER BY transaction_date DESC',
-        [userId, category],
+        'SELECT * FROM transactions WHERE transaction_id = ? ORDER BY transaction_date DESC',
+        [transaction_id],
       )
       return rows
     } finally {
@@ -142,13 +148,29 @@ export class TransactionRepository {
     }
   }
 
-  async listTransactionsByDateRange(userId, startDate, endDate) {
+  async listTransactionsByCategory(cc_num, category) {
     let connection
     try {
       connection = await getConnection()
       const [rows] = await connection.query(
-        'SELECT * FROM transactions WHERE user_id = ? AND transaction_date BETWEEN ? AND ? ORDER BY transaction_date DESC',
-        [userId, startDate, endDate],
+        'SELECT * FROM transactions WHERE cc_num = ? AND category = ? ORDER BY transaction_date DESC',
+        [cc_num, category],
+      )
+      return rows
+    } finally {
+      if (connection) {
+        connection.release()
+      }
+    }
+  }
+
+  async listTransactionsByDateRange(transaction_id, startDate, endDate) {
+    let connection
+    try {
+      connection = await getConnection()
+      const [rows] = await connection.query(
+        'SELECT * FROM transactions WHERE transaction_id = ? AND transaction_date BETWEEN ? AND ? ORDER BY transaction_date DESC',
+        [transaction_id, startDate, endDate],
       )
       return rows
     } finally {

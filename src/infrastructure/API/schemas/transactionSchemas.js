@@ -1,7 +1,8 @@
 import Joi from 'joi'
 
 export const transactionSchema = Joi.object({
-  userId: Joi.number().integer().required(),
+  transaction_id: Joi.number().integer().required(),
+  cc_num: Joi.string().max(50).required(),
   merchantId: Joi.number().integer().required(),
   category: Joi.string().max(50).required(),
   amount: Joi.number().precision(2).required(),
@@ -24,8 +25,8 @@ export const updateTransactionSchema = Joi.object({
   expenseIncome: Joi.boolean().optional(),
 })
 
-export const transactionIdSchema = Joi.object({
-  transactionId: Joi.string().required(),
+export const transaction_idSchema = Joi.object({
+  transaction_id: Joi.string().required(),
 })
 
 export const transactionDateRangeSchema = Joi.object({

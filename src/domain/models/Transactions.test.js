@@ -4,7 +4,8 @@ import { Transaction } from './Transactions'
 describe('Transaction class', () => {
   it('should create a transaction instance with valid parameters', () => {
     const transaction = Transaction.create({
-      userId: 1,
+      transaction_id: 1,
+      cc_num: '1234567890123456',
       merchantId: 101,
       category: 'Groceries',
       amount: 150.25,
@@ -16,7 +17,8 @@ describe('Transaction class', () => {
     })
 
     expect(transaction).toBeInstanceOf(Transaction)
-    expect(transaction.getUserId()).toBe(1)
+    expect(transaction.gettransaction_id()).toBe(1)
+    expect(transaction.getCCNum()).toBe('1234567890123456')
     expect(transaction.getMerchantId()).toBe(101)
     expect(transaction.getCategory()).toBe('Groceries')
     expect(transaction.getAmount()).toBe(150.25)
@@ -60,6 +62,7 @@ it('should return a correct description of the transaction', () => {
   const transaction = new Transaction(
     3,
     103,
+    21321312,
     'Entertainment',
     75,
     789012,

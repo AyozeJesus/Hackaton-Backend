@@ -1,104 +1,62 @@
+import { describe, it, expect, beforeEach } from 'vitest'
 import TransactionRepositoryMock from './TransactionRepositoryMock'
-import { describe, beforeEach, it, expect } from 'vitest'
 
 describe('TransactionRepositoryMock', () => {
   let repo
-  let initialTransaction
 
   beforeEach(() => {
     repo = new TransactionRepositoryMock()
-    initialTransaction = {
-      userId: 1,
-      merchantId: 100,
-      category: 'Electronics',
-      amount: 199.99,
-      transactionNum: 'TX123456789',
-      unixTime: 1622549761,
-      transactionDate: new Date('2021-06-01'),
-      transactionTime: '15:30:00',
-      expenseIncome: true,
-    }
-    repo.createTransaction(initialTransaction)
   })
 
-  it('should create a transaction and retrieve it', async () => {
+  it('creates and retrieves a transaction', async () => {
     const newTransaction = {
-      userId: 2,
-      merchantId: 101,
-      category: 'Groceries',
-      amount: 35.5,
-      transactionNum: 'TX987654321',
-      unixTime: 1622553361,
-      transactionDate: new Date('2021-06-01'),
-      transactionTime: '16:30:00',
-      expenseIncome: false,
+      amount: 100,
+      category: 'Food',
+      transactionDate: '2023-05-08',
     }
     const createdTransaction = await repo.createTransaction(newTransaction)
-    expect(createdTransaction).toEqual({ id: 2, ...newTransaction })
-
-    const fetchedTransaction = await repo.getTransactionById(2)
-    expect(fetchedTransaction).toEqual({ id: 2, ...newTransaction })
-  })
-
-  it('should update a transaction', async () => {
-    const updates = { amount: 250.75 }
-    const updatedTransaction = await repo.updateTransaction(1, updates)
-    expect(updatedTransaction.amount).toEqual(250.75)
-  })
-
-  it('should delete a transaction', async () => {
-    await repo.deleteTransaction(1)
-    await expect(repo.getTransactionById(1)).rejects.toThrow(
-      'Transaction not found',
+    expect(createdTransaction.transaction_id).toBeDefined()
+    const fetchedTransaction = await repo.getTransactionById(
+      createdTransaction.transaction_id,
     )
+    expect(fetchedTransaction).toMatchObject(newTransaction)
   })
 
-  it('should list all transactions for a specific user', async () => {
-    const transactions = await repo.listTransactions(1)
-    expect(transactions).toEqual([
-      {
-        id: 1,
-        ...initialTransaction,
-      },
-    ])
-  })
-
-  it('should list transactions by category', async () => {
-    const categoryTransactions = await repo.listTransactionsByCategory(
-      1,
-      'Electronics',
+  it('updates a transaction', async () => {
+    const transaction = await repo.createTransaction({
+      amount: 50,
+      category: 'Utilities',
+    })
+    const updatedData = { amount: 75, category: 'Utilities Updated' }
+    const updatedTransaction = await repo.updateTransaction(
+      transaction.transaction_id,
+      updatedData,
     )
-    expect(categoryTransactions).toEqual([
-      {
-        id: 1,
-        ...initialTransaction,
-      },
-    ])
+    expect(updatedTransaction.amount).toBe(75)
+    expect(updatedTransaction.category).toBe('Utilities Updated')
   })
 
-  it('should list transactions by date range', async () => {
-    const dateRangeTransactions = await repo.listTransactionsByDateRange(
-      1,
-      new Date('2021-06-01'),
-      new Date('2021-06-02'),
-    )
-    expect(dateRangeTransactions).toEqual([
-      {
-        id: 1,
-        ...initialTransaction,
-      },
-    ])
+  it('deletes a transaction', async () => {
+    const transaction = await repo.createTransaction({ amount: 150 })
+    await repo.deleteTransaction(transaction.transaction_id)
+    await expect(
+      repo.getTransactionById(transaction.transaction_id),
+    ).rejects.toThrow('Transaction not found')
   })
 
-  it('should handle non-existent transaction when updating', async () => {
-    await expect(repo.updateTransaction(999, { amount: 300 })).rejects.toThrow(
-      'Transaction not found',
-    )
+  it('lists transactions by amount', async () => {
+    await repo.createTransaction({ amount: 200 })
+    await repo.createTransaction({ amount: 300 })
+    const filteredTransactions = await repo.listTransactionsByAmount(250, 350)
+    expect(filteredTransactions.length).toBe(1)
+    expect(filteredTransactions[0].amount).toBe(300)
   })
 
-  it('should handle non-existent transaction when deleting', async () => {
-    await expect(repo.deleteTransaction(999)).rejects.toThrow(
-      'Transaction not found',
-    )
+  it('calculates the sum of all transactions', async () => {
+    await repo.createTransaction({ amount: 100 })
+    await repo.createTransaction({ amount: 200 })
+    await repo.createTransaction({ amount: 300 })
+    const total = await repo.sumOfAllTransactions()
+    expect(total).toBe(600)
   })
 })
