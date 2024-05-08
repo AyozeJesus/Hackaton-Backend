@@ -10,13 +10,15 @@ async function main() {
     connection = await getConnection()
     console.log(chalk.green('Connected'))
     console.log(chalk.yellow('Dropping existing tables'))
+    await dropTableIfExists(connection, 'transactions')
+    await dropTableIfExists(connection, 'accounts')
     await dropTableIfExists(connection, 'email_verification')
     await dropTableIfExists(connection, 'users')
-    await dropTableIfExists(connection, 'transactions')
 
     console.log(chalk.yellow('Creating tables'))
     await createEmailsTable(connection)
     await createUsersTable(connection)
+    await createAccountsTable(connection)
     await createTransactionsTable(connection)
   } catch (error) {
     console.error(chalk.red(error))
@@ -67,19 +69,31 @@ async function createUsersTable(connection) {
   console.log(chalk.green('Table users created and populated with some users.'))
 }
 
+async function createAccountsTable(connection) {
+  await connection.query(`
+    CREATE TABLE IF NOT EXISTS accounts (
+        user_id INT,
+        cc_num VARCHAR(255) PRIMARY KEY,
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    );
+  `)
+  console.log(chalk.green('Table accounts created'))
+}
+
 async function createTransactionsTable(connection) {
   await connection.query(`
     CREATE TABLE IF NOT EXISTS transactions (
-        user_id INT,
+        transaction_id INT AUTO_INCREMENT PRIMARY KEY,
+        cc_num VARCHAR(255),
         merchant_id INT,
         category VARCHAR(50),
         amount FLOAT,
-        transaction_num FLOAT,
         unix_time INT,
+        transaction_num INT,
         transaction_date DATE,
         transaction_time TIME,
         expense_income BOOLEAN,
-        FOREIGN KEY (user_id) REFERENCES users(id)
+        FOREIGN KEY (cc_num) REFERENCES accounts(cc_num)
     );
   `)
   console.log(chalk.green('Table transactions created'))

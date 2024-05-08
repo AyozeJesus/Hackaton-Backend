@@ -7,22 +7,24 @@ class TransactionRepositoryMock extends TransactionRepository {
   }
 
   async createTransaction(transaction) {
-    transaction.id = this.transactions.length + 1 // Mock an auto-increment ID
+    transaction.transaction_id = this.transactions.length + 1
     this.transactions.push(transaction)
     return transaction
   }
 
-  async getTransactionById(transactionId) {
-    const transaction = this.transactions.find((t) => t.id === transactionId)
+  async getTransactionById(transaction_id) {
+    const transaction = this.transactions.find(
+      (t) => t.transaction_id === transaction_id,
+    )
     if (!transaction) {
       throw new Error('Transaction not found')
     }
     return transaction
   }
 
-  async updateTransaction(transactionId, updateData) {
+  async updateTransaction(transaction_id, updateData) {
     const transactionIndex = this.transactions.findIndex(
-      (t) => t.id === transactionId,
+      (t) => t.transaction_id === transaction_id,
     )
     if (transactionIndex === -1) {
       throw new Error('Transaction not found')
@@ -34,30 +36,26 @@ class TransactionRepositoryMock extends TransactionRepository {
     return this.transactions[transactionIndex]
   }
 
-  async deleteTransaction(transactionId) {
-    const index = this.transactions.findIndex((t) => t.id === transactionId)
+  async deleteTransaction(transaction_id) {
+    const index = this.transactions.findIndex(
+      (t) => t.transaction_id === transaction_id,
+    )
     if (index === -1) {
       throw new Error('Transaction not found')
     }
     this.transactions.splice(index, 1)
   }
 
-  async listTransactions(userId) {
-    return this.transactions.filter((t) => t.userId === userId)
-  }
-
-  async listTransactionsByCategory(userId, category) {
+  async listTransactionsByAmount(minAmount, maxAmount) {
     return this.transactions.filter(
-      (t) => t.userId === userId && t.category === category,
+      (t) => t.amount >= minAmount && t.amount <= maxAmount,
     )
   }
 
-  async listTransactionsByDateRange(userId, startDate, endDate) {
-    return this.transactions.filter(
-      (t) =>
-        t.userId === userId &&
-        new Date(t.transactionDate) >= new Date(startDate) &&
-        new Date(t.transactionDate) <= new Date(endDate),
+  async sumOfAllTransactions() {
+    return this.transactions.reduce(
+      (sum, transaction) => sum + transaction.amount,
+      0,
     )
   }
 }

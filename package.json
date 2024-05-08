@@ -1,7 +1,7 @@
 {
-  "name": "meemee-backend",
+  "name": "union-backend",
   "version": "1.0.0",
-  "description": "Base de datos para MeeMee",
+  "description": "Base de datos para union",
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",

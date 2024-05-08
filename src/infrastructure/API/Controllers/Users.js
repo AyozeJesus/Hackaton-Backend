@@ -22,7 +22,7 @@ const sendConfirmationEmail = async (toEmail, token) => {
   const mailOptions = {
     from: 'union.aplication@gmail.com',
     to: toEmail,
-    subject: 'Welcome to MeeMee!',
+    subject: 'Welcome to Union!',
     html: `
 <div style="padding: 20px; border-radius: none; border: 2px solid var(--text); box-sizing: border-box; box-shadow: 3px 3px 0 1px rgba(24, 3, 37); outline: none;">
   <h2 style="color: #b528eb; font-family: 'IBM Plex Mono', monospace; margin-bottom: 20px;">Welcome to Union!</h2>

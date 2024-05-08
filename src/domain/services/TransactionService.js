@@ -10,42 +10,55 @@ class TransactionService {
     return this.transactionRepository.createTransaction(transactionData)
   }
 
-  async getTransactionById(transactionId) {
+  async getTransactionByTransactionNum(transactionNum) {
     const transaction =
-      await this.transactionRepository.getTransactionById(transactionId)
+      await this.transactionRepository.getTransactionByTransactionNum(
+        transactionNum,
+      )
     if (!transaction) {
       throw new TransactionNotFoundError(
-        `Transaction with ID ${transactionId} not found.`,
+        `Transaction with transaction number ${transactionNum} not found.`,
       )
     }
     return transaction
   }
 
-  async updateTransaction(transactionId, updateData) {
+  async getTransactionById(transaction_id) {
+    const transaction =
+      await this.transactionRepository.getTransactionById(transaction_id)
+    if (!transaction) {
+      throw new TransactionNotFoundError(
+        `Transaction with ID ${transaction_id} not found.`,
+      )
+    }
+    return transaction
+  }
+
+  async updateTransaction(transaction_id, updateData) {
     return this.transactionRepository.updateTransaction(
-      transactionId,
+      transaction_id,
       updateData,
     )
   }
 
-  async deleteTransaction(transactionId) {
-    return this.transactionRepository.deleteTransaction(transactionId)
+  async deleteTransaction(transaction_id) {
+    return this.transactionRepository.deleteTransaction(transaction_id)
   }
 
-  async listTransactionsByUserId(userId) {
-    return this.transactionRepository.listTransactions(userId)
+  async listTransactionsBytransaction_id(transaction_id) {
+    return this.transactionRepository.listTransactions(transaction_id)
   }
 
-  async listTransactionsByCategory(userId, category) {
+  async listTransactionsByCategory(transaction_id, category) {
     return this.transactionRepository.listTransactionsByCategory(
-      userId,
+      transaction_id,
       category,
     )
   }
 
-  async listTransactionsByDateRange(userId, startDate, endDate) {
+  async listTransactionsByDateRange(transaction_id, startDate, endDate) {
     return this.transactionRepository.listTransactionsByDateRange(
-      userId,
+      transaction_id,
       startDate,
       endDate,
     )
