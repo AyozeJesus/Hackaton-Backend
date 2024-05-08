@@ -1,4 +1,4 @@
-import { getConnection } from '../UserRepository/MySQLClient'
+import { getConnection } from '../../infrastructure/UserRepository/MySQLClient.js'
 
 class AccountRepository {
   async createAccount(account) {
@@ -21,7 +21,8 @@ class AccountRepository {
         'SELECT * FROM accounts WHERE user_id = ?',
         [user_id],
       )
-      return rows.map((row) => new Account(row.user_id, row.cc_num))
+      connection.release()
+      return rows
     } finally {
       connection.release()
     }

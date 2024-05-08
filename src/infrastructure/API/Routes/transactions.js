@@ -6,7 +6,7 @@ import {
   deleteTransactionController,
   listTransactionsByCategoryController,
   listTransactionsByDateRangeController,
-} from '../Controllers/Transactions.js'
+} from '../Controllers/Transaction.js'
 import { authUser } from '../Middlewares/auth.js'
 
 const transactionRoutes = express.Router()
@@ -15,32 +15,32 @@ transactionRoutes.post('/transactions', authUser, createTransactionController)
 
 transactionRoutes.get(
   '/transactions/:id',
-  authUser,
-  getTransactionByIdController,
+
+  authUser, getTransactionByIdController,
 )
 
 transactionRoutes.put(
   '/transactions/:id',
-  authUser,
-  updateTransactionController,
+
+  authUser, updateTransactionController,
 )
 
 transactionRoutes.delete(
   '/transactions/:id',
-  authUser,
-  deleteTransactionController,
+
+  authUser, deleteTransactionController,
 )
 
 transactionRoutes.get(
-  '/users/:userId/transactions/category/:category',
-  authUser,
-  listTransactionsByCategoryController,
+  '/transactions/category/:category',
+
+  authUser, listTransactionsByCategoryController,
 )
 
 transactionRoutes.get(
-  '/users/:userId/transactions/date',
-  authUser,
-  listTransactionsByDateRangeController,
+  '/transactions/date',
+
+  authUser, listTransactionsByDateRangeController,
 )
 
 export { transactionRoutes }

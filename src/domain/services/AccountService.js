@@ -1,5 +1,5 @@
-import AccountRepository from '../repositories/AccountRepository'
-import Account from '../models/Account'
+import AccountRepository from '../repository/AccountRepository.js'
+import Account from '../models/Account.js'
 
 class AccountService {
   constructor() {

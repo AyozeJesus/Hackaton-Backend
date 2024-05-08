@@ -13,7 +13,7 @@ userRoutes.post('/user/register', newUserController)
 
 userRoutes.post('/user/login', loginController)
 
-userRoutes.get('/user/:id', getUserController)
+userRoutes.get('/user/:id', authUser, getUserController)
 
 userRoutes.get('/user/activate/:token', activateAccountController)
 
