@@ -1,7 +1,6 @@
 import Joi from 'joi'
 
-export const transactionSchema = Joi.object({
-  transaction_id: Joi.number().integer().required(),
+export const transactionsSchema = Joi.object({
   cc_num: Joi.string().max(50).required(),
   merchant: Joi.number().integer().required(),
   category: Joi.string().max(50).required(),

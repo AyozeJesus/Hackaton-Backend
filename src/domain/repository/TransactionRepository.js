@@ -146,13 +146,13 @@ export class TransactionRepository {
     }
   }
 
-  async listTransactionsByCategory(cc_num, category) {
+  async listTransactionsByCategory(category) {
     let connection
     try {
       connection = await getConnection()
       const [rows] = await connection.query(
-        'SELECT * FROM transactions WHERE cc_num = ? AND category = ? ORDER BY transaction_date DESC',
-        [cc_num, category],
+        'SELECT * FROM transactions WHERE category = ? ORDER BY transaction_date DESC',
+        [category],
       )
       return rows
     } finally {

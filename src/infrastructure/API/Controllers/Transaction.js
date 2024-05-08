@@ -1,8 +1,8 @@
-import { TransactionService } from '../../../domain/services/TransactionService.js'
+import TransactionService from '../../../domain/services/TransactionService.js'
 import {
   transactionsSchema,
   updateTransactionSchema,
-} from '../schemas/transactionsSchemas.js'
+} from '../schemas/transactionSchemas.js'
 import { generateError } from '../../../domain/utils/helpers.js'
 
 const transactionService = new TransactionService()
@@ -61,9 +61,8 @@ export const deleteTransactionController = async (req, res, next) => {
 
 export const listTransactionsByCategoryController = async (req, res, next) => {
   try {
-    const { transaction_id, category } = req.params
+    const { category } = req.params
     const transactions = await transactionService.listTransactionsByCategory(
-      transaction_id,
       category,
     )
     res.status(200).json(transactions)

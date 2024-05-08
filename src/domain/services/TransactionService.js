@@ -49,9 +49,8 @@ class TransactionService {
     return this.transactionRepository.listTransactions(transaction_id)
   }
 
-  async listTransactionsByCategory(transaction_id, category) {
+  async listTransactionsByCategory(category) {
     return this.transactionRepository.listTransactionsByCategory(
-      transaction_id,
       category,
     )
   }

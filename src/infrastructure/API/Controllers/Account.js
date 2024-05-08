@@ -1,4 +1,4 @@
-import AccountService from '../services/AccountService'
+import AccountService from '../../../domain/services/AccountService.js'
 
 const accountService = new AccountService()
 
@@ -6,7 +6,7 @@ export async function createAccount(req, res) {
   const { user_id, cc_num } = req.body
   try {
     const account = await accountService.createAccount(user_id, cc_num)
-    res.status(201).json(account)
+    res.status(200).json({ message: 'Account created.' })
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' })
   }
