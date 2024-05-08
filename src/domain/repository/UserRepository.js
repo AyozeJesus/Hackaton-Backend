@@ -95,7 +95,7 @@ export class UserRepository {
         throw generateError('Email or password is invalid.', 404)
       }
       token = jwt.sign(
-        { userId: user.id, email: user.email },
+        { userId: user.id, email: user.email, name: user.name, lastname: user.lastname },
         process.env.JWT_SECRET,
         {
           expiresIn: '24h',
