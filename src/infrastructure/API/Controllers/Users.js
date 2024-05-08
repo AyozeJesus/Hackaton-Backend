@@ -143,7 +143,7 @@ export const loginController = async (req, res, next) => {
       throw generateError('Invalid email or password.', 401)
     }
 
-    res.status(200).json({ id: jwtPayLoad.id, role: jwtPayLoad.role, token: token });
+    res.status(200).json({ token: token });
   } catch (err) {
     next(err)
   }
