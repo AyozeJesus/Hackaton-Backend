@@ -6,7 +6,7 @@ describe('Transaction class', () => {
     const transaction = Transaction.create({
       transaction_id: 1,
       cc_num: '1234567890123456',
-      merchantId: 101,
+      merchant: 101,
       category: 'Groceries',
       amount: 150.25,
       transactionNum: 123456,
@@ -19,7 +19,7 @@ describe('Transaction class', () => {
     expect(transaction).toBeInstanceOf(Transaction)
     expect(transaction.gettransaction_id()).toBe(1)
     expect(transaction.getCCNum()).toBe('1234567890123456')
-    expect(transaction.getMerchantId()).toBe(101)
+    expect(transaction.getmerchant()).toBe(101)
     expect(transaction.getCategory()).toBe('Groceries')
     expect(transaction.getAmount()).toBe(150.25)
     expect(transaction.getTransactionNumber()).toBe(123456)

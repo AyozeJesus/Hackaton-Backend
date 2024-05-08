@@ -1,37 +1,40 @@
-import dotenv from 'dotenv'
-dotenv.config()
-import { getConnection } from '../../UserRepository/MySQLClient.js'
-import bcrypt from 'bcrypt'
-import chalk from 'chalk'
+import dotenv from 'dotenv';
+dotenv.config();
+import { getConnection } from '../../UserRepository/MySQLClient.js';
+import bcrypt from 'bcrypt';
+import chalk from 'chalk';
 
 async function main() {
-  let connection
+  let connection;
   try {
-    connection = await getConnection()
-    console.log(chalk.green('Connected'))
-    console.log(chalk.yellow('Dropping existing tables'))
-    await dropTableIfExists(connection, 'transactions')
-    await dropTableIfExists(connection, 'accounts')
-    await dropTableIfExists(connection, 'email_verification')
-    await dropTableIfExists(connection, 'users')
+    connection = await getConnection();
+    console.log(chalk.green('Connected'));
+    console.log(chalk.yellow('Dropping existing tables'));
+    await dropTableIfExists(connection, 'transactions');
+    await dropTableIfExists(connection, 'accounts');
+    await dropTableIfExists(connection, 'email_verification');
+    await dropTableIfExists(connection, 'users');
 
-    console.log(chalk.yellow('Creating tables'))
-    await createEmailsTable(connection)
-    await createUsersTable(connection)
-    await createAccountsTable(connection)
-    await createTransactionsTable(connection)
+    console.log(chalk.yellow('Creating tables'));
+    await createEmailsTable(connection);
+    await createUsersTable(connection);
+    await createAccountsTable(connection);
+    await createTransactionsTable(connection);
+
+    console.log(chalk.yellow('Inserting sample data'));
+    await insertSampleData(connection);
   } catch (error) {
-    console.error(chalk.red(error))
+    console.error(chalk.red(error));
   } finally {
-    if (connection) connection.release()
-    process.exit()
+    if (connection) connection.release();
+    process.exit();
   }
 }
 
 async function dropTableIfExists(connection, tableName) {
-  await connection.query(`SET FOREIGN_KEY_CHECKS = 0`)
-  await connection.query(`DROP TABLE IF EXISTS ${tableName}`)
-  console.log(chalk.green(`Table ${tableName} dropped if exists.`))
+  await connection.query(`SET FOREIGN_KEY_CHECKS = 0`);
+  await connection.query(`DROP TABLE IF EXISTS ${tableName}`);
+  console.log(chalk.green(`Table ${tableName} dropped if exists.`));
 }
 
 async function createEmailsTable(connection) {
@@ -42,8 +45,8 @@ async function createEmailsTable(connection) {
         token VARCHAR(255),
         FOREIGN KEY (user_id) REFERENCES users(id)
     );
-  `)
-  console.log(chalk.green('Table email_verification created'))
+  `);
+  console.log(chalk.green('Table email_verification created'));
 }
 
 async function createUsersTable(connection) {
@@ -57,16 +60,8 @@ async function createUsersTable(connection) {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         isActivated BOOLEAN NOT NULL DEFAULT false
     );
-  `)
-  const usersToInsert = [
-    // Define users here
-  ]
-  for (const user of usersToInsert) {
-    const saltRounds = 10
-    user.password = await bcrypt.hash(user.password, saltRounds)
-    await connection.query('INSERT INTO users SET ?', user)
-  }
-  console.log(chalk.green('Table users created and populated with some users.'))
+  `);
+  console.log(chalk.green('Table users created'));
 }
 
 async function createAccountsTable(connection) {
@@ -76,8 +71,8 @@ async function createAccountsTable(connection) {
         cc_num VARCHAR(255) PRIMARY KEY,
         FOREIGN KEY (user_id) REFERENCES users(id)
     );
-  `)
-  console.log(chalk.green('Table accounts created'))
+  `);
+  console.log(chalk.green('Table accounts created'));
 }
 
 async function createTransactionsTable(connection) {
@@ -85,18 +80,44 @@ async function createTransactionsTable(connection) {
     CREATE TABLE IF NOT EXISTS transactions (
         transaction_id INT AUTO_INCREMENT PRIMARY KEY,
         cc_num VARCHAR(255),
-        merchant_id INT,
+        merchant VARCHAR(255),
         category VARCHAR(50),
         amount FLOAT,
-        unix_time INT,
-        transaction_num INT,
+        unix_time Timestamp,
+        transaction_num VARCHAR(255),
         transaction_date DATE,
         transaction_time TIME,
         expense_income BOOLEAN,
         FOREIGN KEY (cc_num) REFERENCES accounts(cc_num)
     );
-  `)
-  console.log(chalk.green('Table transactions created'))
+  `);
+  console.log(chalk.green('Table transactions created'));
 }
 
-main()
+async function insertSampleData(connection) {
+  const users = [
+    { name: 'Alice', lastname: 'Smith', email: 'alice@example.com', password: await bcrypt.hash('password123', 10) },
+    { name: 'Bob', lastname: 'Jones', email: 'bob@example.com', password: await bcrypt.hash('password456', 10) }
+  ];
+  for (let user of users) {
+    await connection.query('INSERT INTO users SET ?', user);
+  }
+
+  const accounts = [
+    { user_id: 1, cc_num: '1234567890123456' },
+    { user_id: 2, cc_num: '6543210987654321' }
+  ];
+  for (let account of accounts) {
+    await connection.query('INSERT INTO accounts SET ?', account);
+  }
+
+  const transactions = [
+    { cc_num: '1234567890123456', merchant: 1, category: 'Electronics', amount: 200.50, unix_time: 1610000000, transaction_num: 1001, transaction_date: '2023-01-10', transaction_time: '14:00:00', expense_income: false },
+    { cc_num: '6543210987654321', merchant: 2, category: 'Groceries', amount: 75.25, unix_time: 1610000200, transaction_num: 1002, transaction_date: '2023-01-11', transaction_time: '10:30:00', expense_income: true }
+  ];
+  for (let transaction of transactions) {
+    await connection.query('INSERT INTO transactions SET ?', transaction);
+  }
+}
+
+main();

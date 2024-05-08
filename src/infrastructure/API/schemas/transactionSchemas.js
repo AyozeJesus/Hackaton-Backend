@@ -3,7 +3,7 @@ import Joi from 'joi'
 export const transactionSchema = Joi.object({
   transaction_id: Joi.number().integer().required(),
   cc_num: Joi.string().max(50).required(),
-  merchantId: Joi.number().integer().required(),
+  merchant: Joi.number().integer().required(),
   category: Joi.string().max(50).required(),
   amount: Joi.number().precision(2).required(),
   transactionNum: Joi.string().max(50).required(),
