@@ -36,7 +36,7 @@ export class UserRepository {
       const hashedPassword = await bcrypt.hash(password, saltRounds)
 
       const insertUserQuery =
-        'INSERT INTO users (name, lastname, email, password,) VALUES (?, ?, ?, ?)'
+        'INSERT INTO users (name, lastname, email, password) VALUES (?, ?, ?, ?)'
       const [insertResult] = await connection.query(insertUserQuery, [
         name,
         lastname,
