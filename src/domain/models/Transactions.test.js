@@ -10,7 +10,6 @@ describe('Transaction class', () => {
       category: 'Groceries',
       amount: 150.25,
       transactionNum: 123456,
-      unixTime: 1633036800,
       transactionDate: '2021-10-01',
       transactionTime: '14:00:00',
       expenseIncome: false,
@@ -23,7 +22,6 @@ describe('Transaction class', () => {
     expect(transaction.getCategory()).toBe('Groceries')
     expect(transaction.getAmount()).toBe(150.25)
     expect(transaction.getTransactionNumber()).toBe(123456)
-    expect(transaction.getUnixTime()).toBe(1633036800)
     expect(transaction.getTransactionDate()).toBe('2021-10-01')
     expect(transaction.getTransactionTime()).toBe('14:00:00')
     expect(transaction.isIncome()).toBe(false)
@@ -66,7 +64,6 @@ it('should return a correct description of the transaction', () => {
     'Entertainment',
     75,
     789012,
-    1633209600,
     '2021-10-03',
     '17:00:00',
     true,

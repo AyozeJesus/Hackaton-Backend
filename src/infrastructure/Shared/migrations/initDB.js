@@ -83,7 +83,6 @@ async function createTransactionsTable(connection) {
         merchant VARCHAR(255),
         category VARCHAR(50),
         amount FLOAT,
-        unix_time Timestamp,
         transaction_num VARCHAR(255),
         transaction_date DATE,
         transaction_time TIME,
@@ -112,8 +111,8 @@ async function insertSampleData(connection) {
   }
 
   const transactions = [
-    { cc_num: '1234567890123456', merchant: 1, category: 'Electronics', amount: 200.50, unix_time: 1610000000, transaction_num: 1001, transaction_date: '2023-01-10', transaction_time: '14:00:00', expense_income: false },
-    { cc_num: '6543210987654321', merchant: 2, category: 'Groceries', amount: 75.25, unix_time: 1610000200, transaction_num: 1002, transaction_date: '2023-01-11', transaction_time: '10:30:00', expense_income: true }
+    { cc_num: '1234567890123456', merchant: 1, category: 'Electronics', amount: 200.50, transaction_num: 1001, transaction_date: '2023-01-10', transaction_time: '14:00:00', expense_income: false },
+    { cc_num: '6543210987654321', merchant: 2, category: 'Groceries', amount: 75.25, transaction_num: 1002, transaction_date: '2023-01-11', transaction_time: '10:30:00', expense_income: true }
   ];
   for (let transaction of transactions) {
     await connection.query('INSERT INTO transactions SET ?', transaction);

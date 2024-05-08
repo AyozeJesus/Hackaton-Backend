@@ -59,22 +59,11 @@ export const deleteTransactionController = async (req, res, next) => {
   }
 }
 
-export const listTransactionsByUserIdController = async (req, res, next) => {
-  try {
-    const transactions = await transactionService.listTransactionsByUserId(
-      req.params.userId,
-    )
-    res.status(200).json(transactions)
-  } catch (err) {
-    next(err)
-  }
-}
-
 export const listTransactionsByCategoryController = async (req, res, next) => {
   try {
-    const { userId, category } = req.params
+    const { transaction_id, category } = req.params
     const transactions = await transactionService.listTransactionsByCategory(
-      userId,
+      transaction_id,
       category,
     )
     res.status(200).json(transactions)
@@ -85,10 +74,10 @@ export const listTransactionsByCategoryController = async (req, res, next) => {
 
 export const listTransactionsByDateRangeController = async (req, res, next) => {
   try {
-    const { userId } = req.params
+    const { transaction_id } = req.params
     const { startDate, endDate } = req.query
     const transactions = await transactionService.listTransactionsByDateRange(
-      userId,
+      transaction_id,
       startDate,
       endDate,
     )
