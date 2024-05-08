@@ -2,7 +2,7 @@ export class Transaction {
   constructor(
     transaction_id,
     cc_num,
-    merchantId,
+    merchant,
     category,
     amount,
     transactionNum,
@@ -13,7 +13,7 @@ export class Transaction {
   ) {
     this.transaction_id = transaction_id
     this.cc_num = cc_num
-    this.merchantId = merchantId
+    this.merchant = merchant
     this.category = category
     this.amount = amount
     this.transactionNum = transactionNum
@@ -27,7 +27,7 @@ export class Transaction {
     return new Transaction(
       data.transaction_id,
       data.cc_num,
-      data.merchantId,
+      data.merchant,
       data.category,
       data.amount,
       data.transactionNum,
@@ -54,8 +54,8 @@ export class Transaction {
     return this.cc_num
   }
 
-  getMerchantId() {
-    return this.merchantId
+  getmerchant() {
+    return this.merchant
   }
 
   getCategory() {

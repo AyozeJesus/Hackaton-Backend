@@ -8,12 +8,12 @@ export class TransactionRepository {
       connection = await getConnection()
       const insertTransactionQuery = `
         INSERT INTO transactions 
-        (cc_num, merchant_id, category, amount, transaction_num, unix_time, transaction_date, transaction_time, expense_income)
+        (cc_num, merchant, category, amount, transaction_num, unix_time, transaction_date, transaction_time, expense_income)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
       const {
         cc_num,
-        merchantId,
+        merchant,
         category,
         amount,
         transactionNum,
@@ -25,7 +25,7 @@ export class TransactionRepository {
 
       const [insertResult] = await connection.query(insertTransactionQuery, [
         cc_num,
-        merchantId,
+        merchant,
         category,
         amount,
         transactionNum,

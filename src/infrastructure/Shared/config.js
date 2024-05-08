@@ -3,6 +3,6 @@ export const config = {
     address: 'localhost',
     user: 'demo',
     password: process.env.DB_PASSWORD || 'password',
-    database: 'template-node',
+    database: 'backend-union',
   },
 }
