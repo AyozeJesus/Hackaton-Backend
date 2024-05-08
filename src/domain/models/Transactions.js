@@ -6,7 +6,6 @@ export class Transaction {
     category,
     amount,
     transactionNum,
-    unixTime,
     transactionDate,
     transactionTime,
     expenseIncome,
@@ -17,7 +16,6 @@ export class Transaction {
     this.category = category
     this.amount = amount
     this.transactionNum = transactionNum
-    this.unixTime = unixTime
     this.transactionDate = transactionDate
     this.transactionTime = transactionTime
     this.expenseIncome = expenseIncome
@@ -31,7 +29,6 @@ export class Transaction {
       data.category,
       data.amount,
       data.transactionNum,
-      data.unixTime,
       data.transactionDate,
       data.transactionTime,
       data.expenseIncome,
@@ -70,10 +67,6 @@ export class Transaction {
     return this.transactionNum
   }
 
-  getUnixTime() {
-    return this.unixTime
-  }
-
   getTransactionDate() {
     return this.transactionDate
   }
@@ -92,8 +85,7 @@ export class Transaction {
 
   isEqual(otherTransaction) {
     return (
-      this.transactionNum === otherTransaction.transactionNum &&
-      this.unixTime === otherTransaction.unixTime
+      this.transactionNum === otherTransaction.transactionNum
     )
   }
 }

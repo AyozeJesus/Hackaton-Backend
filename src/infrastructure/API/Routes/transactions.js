@@ -4,7 +4,6 @@ import {
   getTransactionByIdController,
   updateTransactionController,
   deleteTransactionController,
-  listTransactionsByUserIdController,
   listTransactionsByCategoryController,
   listTransactionsByDateRangeController,
 } from '../Controllers/Transactions.js'
@@ -30,12 +29,6 @@ transactionRoutes.delete(
   '/transactions/:id',
   authUser,
   deleteTransactionController,
-)
-
-transactionRoutes.get(
-  '/users/:userId/transactions',
-  authUser,
-  listTransactionsByUserIdController,
 )
 
 transactionRoutes.get(
