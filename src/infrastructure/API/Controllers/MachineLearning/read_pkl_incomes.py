@@ -1,36 +1,33 @@
 import pandas as pd
-import pickle
 import sys
 
-historical_data = pd.read_csv('new2.csv')
+def calcular_suma_acumulada(cc_num):
 
-def predecir_ahorro():
     """
-    Función para predecir el ahorro acumulado futuro para un cc_num dado.
+    Función para calcular la suma acumulada de un cc_num dado.
 
     Args:
-    cc_num (str): Número de tarjeta de crédito para el cual hacer la predicción.
+    cc_num (int): Número de tarjeta de crédito para el cual calcular la suma acumulada.
 
     Returns:
-    float: Predicción del ahorro acumulado futuro.
+    float: Suma acumulada del cc_num dado.
     """
-    data_for_cc_num = historical_data[historical_data['cc_num'] == cc_num]
-    # Carga el modelo GARCH desde el archivo pickle
-    with open('modelos_arima_ahorro.pkl.', 'rb') as f:
-        loaded_model = pickle.load(f)
+    # Carga los datos históricos desde un archivo CSV
+    historical_data = pd.read_csv('src/infrastructure/API/Controllers/MachineLearning/new2.csv')
 
-    # Realiza la predicción de la volatilidad
-    predicciones = loaded_model.forecast(horizon=6)
-    predicted_variance = predicciones.variance[-1:].round(2)  # Obtener la última fila de varianzas y redondear
-    predicted_mean = predicciones.mean[-1:].round(2)  # Obtener la última fila de medias y redondear
+    # Filtra los datos históricos para el cc_num dado y la categoría "Salary"
+    data_for_cc_num = historical_data[(historical_data['cc_num'] == cc_num) & (historical_data['category'] == 'Salary')]
 
-    # Devuelve un DataFrame con las predicciones de medias y varianzas
-    return {"predicted_mean": predicted_mean, "predicted_variance": predicted_variance}
+    # Calcula la suma acumulada de los ingresos para la categoría "Salary"
+    suma_acumulada = data_for_cc_num['amount'].sum()
+
+    return suma_acumulada
 
 # Ejemplo de uso
 try:
-    cc_num = '30270432095985'
-    ahorro_predicho = predecir_ahorro()
-    print(f"Ahorro acumulado predicho para el cc_num {cc_num}: {ahorro_predicho}")
+
+    cc_num = int(sys.argv[1])
+    suma_acumulada = calcular_suma_acumulada(cc_num)
+    print(f"La suma acumulada para el cc_num {cc_num} es: {suma_acumulada}")
 except Exception as e:
     print(f"Error: {e}")
