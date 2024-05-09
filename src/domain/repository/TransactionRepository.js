@@ -17,9 +17,9 @@ export class TransactionRepository {
         category,
         amount,
         transactionNum,
-        transactionDate,
-        transactionTime,
-        expenseIncome,
+        date,
+        time,
+        expense_income,
       } = transactionData
 
       const [insertResult] = await connection.query(insertTransactionQuery, [
@@ -28,9 +28,9 @@ export class TransactionRepository {
         category,
         amount,
         transactionNum,
-        transactionDate,
-        transactionTime,
-        expenseIncome,
+        date,
+        time,
+        expense_income,
       ])
 
       return { transaction_id: insertResult.insertId }
