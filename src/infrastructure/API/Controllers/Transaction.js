@@ -10,10 +10,10 @@ const transactionService = new TransactionService()
 export const createTransactionController = async (req, res, next) => {
   try {
     const { error } = transactionsSchema.validate(req.body)
-
     if (error) {
       throw generateError(error.details[0].message, 400)
     }
+
 
     const transaction = await transactionService.createTransaction(req.body)
     res

@@ -2,16 +2,15 @@ import Joi from 'joi'
 
 export const transactionsSchema = Joi.object({
   cc_num: Joi.string().max(50).required(),
-  merchant: Joi.number().integer().required(),
+  merchant: Joi.string().required(),
   category: Joi.string().max(50).required(),
   amount: Joi.number().precision(2).required(),
-  transactionNum: Joi.string().max(50).required(),
-  unixTime: Joi.number().integer().required(),
-  transactionDate: Joi.date().iso().required(),
-  transactionTime: Joi.string()
+  transaction_num: Joi.string().max(50),
+  date: Joi.date().iso().required(),
+  time: Joi.string()
     .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/)
     .required(),
-  expenseIncome: Joi.boolean().required(),
+  expense_income: Joi.number(),
 })
 
 export const updateTransactionSchema = Joi.object({
