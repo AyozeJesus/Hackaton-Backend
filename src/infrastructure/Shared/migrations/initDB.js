@@ -6,7 +6,7 @@ import chalk from 'chalk';
 import fs from 'fs';
 import csv from 'csv-parser';
 import mysql from 'mysql2/promise';
-  
+
 
 async function main() {
   let connection;
@@ -68,8 +68,159 @@ async function createUsersTable(connection) {
         isActivated BOOLEAN NOT NULL DEFAULT false
     );
   `);
-  console.log(chalk.green('Table users created'));
+  const usersToInsert = [
+    {
+      "name": "Elena",
+      "lastname": "Gonzalez",
+      "email": "egonzalez@example.com",
+      "password": "a1b2c3d4",
+      "isActivated": true
+    },
+    {
+      "name": "David",
+      "lastname": "Smith",
+      "email": "dsmit2h@example.com",
+      "password": "p@ssw0rd!",
+      "isActivated": true
+    },
+    {
+      "name": "Sophia",
+      "lastname": "Johnson",
+      "email": "sjohnson2@example.com",
+      "password": "qwerty123",
+      "isActivated": true
+    },
+    {
+      "name": "James",
+      "lastname": "Williams",
+      "email": "2jwilliams@example.com",
+      "password": "pass1234",
+      "isActivated": true
+    },
+    {
+      "name": "Isabella",
+      "lastname": "Martinez",
+      "email": "2imartinez@example.com",
+      "password": "abcd1234",
+      "isActivated": true
+    },
+    {
+      "name": "Liam",
+      "lastname": "Brown",
+      "email": "lbr4own@example.com",
+      "password": "password123",
+      "isActivated": true
+    },
+    {
+      "name": "Mia",
+      "lastname": "Jones",
+      "email": "mjon5es@example.com",
+      "password": "securepass",
+      "isActivated": true
+    },
+    {
+      "name": "Noah",
+      "lastname": "Taylor",
+      "email": "nta6ylor@example.com",
+      "password": "myPa$$word",
+      "isActivated": true
+    },
+    {
+      "name": "Emma",
+      "lastname": "Garcia",
+      "email": "egar3cia@example.com",
+      "password": "pa$$w0rd!",
+      "isActivated": true
+    },
+    {
+      "name": "Oliver",
+      "lastname": "Davis",
+      "email": "odav3is@example.com",
+      "password": "test1234",
+      "isActivated": true
+    },
+    {
+      "name": "Elena",
+      "lastname": "Gonzalez",
+      "email": "egonzalez1@example.com",
+      "password": "a1b2c3d4",
+      "isActivated": true
+    },
+    {
+      "name": "David",
+      "lastname": "Smith",
+      "email": "dsmith@example.com",
+      "password": "p@ssw0rd!",
+      "isActivated": true
+    },
+    {
+      "name": "Sophia",
+      "lastname": "Johnson",
+      "email": "sjohnson@example.com",
+      "password": "qwerty123",
+      "isActivated": true
+    },
+    {
+      "name": "James",
+      "lastname": "Williams",
+      "email": "jwilliams@example.com",
+      "password": "pass1234",
+      "isActivated": true
+    },
+    {
+      "name": "Isabella",
+      "lastname": "Martinez",
+      "email": "imartinez@example.com",
+      "password": "abcd1234",
+      "isActivated": true
+    },
+    {
+      "name": "Liam",
+      "lastname": "Brown",
+      "email": "lbrown@example.com",
+      "password": "password123",
+      "isActivated": true
+    },
+    {
+      "name": "Mia",
+      "lastname": "Jones",
+      "email": "mjones@example.com",
+      "password": "securepass",
+      "isActivated": true
+    },
+    {
+      "name": "Noah",
+      "lastname": "Taylor",
+      "email": "ntaylor@example.com",
+      "password": "myPa$$word",
+      "isActivated": true
+    },
+    {
+      "name": "Emma",
+      "lastname": "Garcia",
+      "email": "egarcia@example.com",
+      "password": "pa$$w0rd!",
+      "isActivated": true
+    },
+    {
+      "name": "Oliver",
+      "lastname": "Davis",
+      "email": "odavis@example.com",
+      "password": "test1234",
+      "isActivated": true
+    }
+
+  ]
+
+  for (const user of usersToInsert) {
+    const saltRounds = 10
+    user.password = await bcrypt.hash(user.password, saltRounds)
+    await connection.query(`INSERT INTO users SET ?`, user)
+  }
+
+  console.log(chalk.green('Table users created and populated with some users.'))
 }
+
 
 async function createAccountsTable(connection) {
   await connection.query(`
@@ -79,8 +230,97 @@ async function createAccountsTable(connection) {
         FOREIGN KEY (user_id) REFERENCES users(id)
     );
   `);
-  console.log(chalk.green('Table accounts created'));
+  const accountToInsert = [
+    {
+      "user_id": "1",
+      "cc_num": "4512828414983801774"
+    },
+    {
+      "user_id": "2",
+      "cc_num": "4512828414983801775"
+    },
+    {
+      "user_id": "3",
+      "cc_num": "4512828414983801782"
+    },
+    {
+      "user_id": "4",
+      "cc_num": "4512828414983801781"
+    },
+    {
+      "user_id": "5",
+      "cc_num": "4512828414983801780"
+    },
+    {
+      "user_id": "6",
+      "cc_num": "4512828414983801779"
+    },
+    {
+      "user_id": "7",
+      "cc_num": "4512828414983801778"
+    },
+    {
+      "user_id": "8",
+      "cc_num": "4512828414983801777"
+    },
+    {
+      "user_id": "9",
+      "cc_num": "4512828414983801776"
+    },
+    {
+      "user_id": "10",
+      "cc_num": "4512828414983801783"
+    },
+    {
+      "user_id": "11",
+      "cc_num": "6538441737335434"
+    },
+    {
+      "user_id": "12",
+      "cc_num": "30270432095985"
+    },
+    {
+      "user_id": "13",
+      "cc_num": "6538891242532018"
+    },
+    {
+      "user_id": "14",
+      "cc_num": "4364010865167176"
+    },
+    {
+      "user_id": "15",
+      "cc_num": "4642255475285942"
+    },
+    {
+      "user_id": "16",
+      "cc_num": "344709867813900"
+    },
+    {
+      "user_id": "17",
+      "cc_num": "6011438889172900"
+    },
+    {
+      "user_id": "18",
+      "cc_num": "4512828414983801773"
+    },
+    {
+      "user_id": "19",
+      "cc_num": "4904681492230012"
+    },
+    {
+      "user_id": "20",
+      "cc_num": "4586810168620942"
+    }
+
+  ]
+  for (const account of accountToInsert) {
+    await connection.query(`INSERT INTO accounts SET ?`, account)
+  }
+
+  console.log(chalk.green('Table accounts created and populated with some accounts.'));
 }
+
+
 
 async function createTransactionsTable(connection) {
   await connection.query(`
@@ -124,11 +364,11 @@ async function loadDataFromCSV(connection, filename) {
 }
 
 async function insertData(cc_num, merchant, category, amount, transaction_num, transaction_date, transaction_time, expense_income) {
- 
+
   const connection = await mysql.createConnection({
     address: 'localhost',
-    user: 'root',
-    password: process.env.DB_PASSWORD || 'Skybricks12',
+    user: 'demo',
+    password: process.env.DB_PASSWORD || 'password',
     database: 'backend-union',
   });
 
@@ -137,7 +377,7 @@ async function insertData(cc_num, merchant, category, amount, transaction_num, t
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
   const values = [cc_num, merchant, category, amount, transaction_num, transaction_date, transaction_time, expense_income];
-  
+
   try {
     await connection.query(query, values);
     console.log("Data inserted successfully!");
