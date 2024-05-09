@@ -1,5 +1,6 @@
 import { TransactionRepository } from '../repository/TransactionRepository.js'
 import { TransactionNotFoundError } from '../errors/TransactionNotFoundError.js'
+import { calculateTotalByAccount } from '../utils/calculateTotal.js'
 
 class TransactionService {
   constructor() {
@@ -8,6 +9,22 @@ class TransactionService {
 
   async createTransaction(transactionData) {
     return this.transactionRepository.createTransaction(transactionData)
+  }
+
+  async getExpensesByCategoryAndAccount(category, cc_num) {
+    return this.transactionRepository.getExpensesByCategoryAndAccount(category, cc_num)
+  }
+
+  async getIncomesByCategoryAndAccount(category, cc_num) {
+    return this.transactionRepository.getIncomesByCategoryAndAccount(category, cc_num)
+  }
+
+  async getTotalExpensesByCategoryAndAccount(category, cc_num) {
+    return this.transactionRepository.getTotalExpensesByCategoryAndAccount(category, cc_num)
+  }
+
+  async getTotalIncomesByCategoryAndAccount(category, cc_num) {
+    return this.transactionRepository.getTotalIncomesByCategoryAndAccount(category, cc_num)
   }
 
   async getTransactionByTransactionNum(transactionNum) {
@@ -41,6 +58,18 @@ class TransactionService {
     )
   }
 
+  async getExpensesByAccount(cc_num) {
+    return this.transactionRepository.getExpensesByAccount(cc_num);
+  }
+
+  async getTransactionsByAccount(cc_num) {
+    return this.transactionRepository.getTransactionsByAccount(cc_num);
+  }
+
+  async getIncomesByAccount(cc_num) {
+    return this.transactionRepository.getIncomesByAccount(cc_num);
+  }
+
   async deleteTransaction(transaction_id) {
     return this.transactionRepository.deleteTransaction(transaction_id)
   }
@@ -55,12 +84,19 @@ class TransactionService {
     )
   }
 
-  async listTransactionsByDateRange(transaction_id, startDate, endDate) {
-    return this.transactionRepository.listTransactionsByDateRange(
-      transaction_id,
+  async listTransactionsByDateRangeAndAccount(startDate, endDate, cc_num) {
+    return this.transactionRepository.listTransactionsByDateRangeAndAccount(
       startDate,
       endDate,
+      cc_num,
     )
+  }
+  async getTotalExpensesByAccount(cc_num) {
+    return calculateTotalByAccount('expenses', cc_num);
+  }
+
+  async getTotalIncomesByAccount(cc_num) {
+    return calculateTotalByAccount('incomes', cc_num);
   }
 }
 
