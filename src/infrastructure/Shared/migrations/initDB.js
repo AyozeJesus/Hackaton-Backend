@@ -3,6 +3,9 @@ dotenv.config();
 import { getConnection } from '../../UserRepository/MySQLClient.js';
 import bcrypt from 'bcrypt';
 import chalk from 'chalk';
+import fs from 'fs';
+import csv from 'csv-parser';
+import { log } from 'console';
 
 async function main() {
   let connection;
@@ -21,8 +24,11 @@ async function main() {
     await createAccountsTable(connection);
     await createTransactionsTable(connection);
 
-    console.log(chalk.yellow('Inserting sample data'));
-    await insertSampleData(connection);
+    console.log(chalk.yellow('Loading data from CSV'));
+    await loadDataFromCSV(connection, 'src/infrastructure/Shared/migrations/data.csv');
+
+
+
   } catch (error) {
     console.error(chalk.red(error));
   } finally {
@@ -93,30 +99,49 @@ async function createTransactionsTable(connection) {
   console.log(chalk.green('Table transactions created'));
 }
 
-async function insertSampleData(connection) {
-  const users = [
-    { name: 'Alice', lastname: 'Smith', email: 'alice@example.com', password: await bcrypt.hash('password123', 10) },
-    { name: 'Bob', lastname: 'Jones', email: 'bob@example.com', password: await bcrypt.hash('password456', 10) }
-  ];
-  for (let user of users) {
-    await connection.query('INSERT INTO users SET ?', user);
-  }
+async function loadDataFromCSV(connection, filename) {
+  try {
+    const stream = fs.createReadStream(filename);
 
-  const accounts = [
-    { user_id: 1, cc_num: '1234567890123456' },
-    { user_id: 2, cc_num: '6543210987654321' }
-  ];
-  for (let account of accounts) {
-    await connection.query('INSERT INTO accounts SET ?', account);
-  }
+    for await (const row of stream.pipe(csv())) {
+      await insertData(
+        connection,
+        row.cc_num,
+        row.merchant,
+        row.category,
+        row.amount,
+        row.transaction_num,
+        row.transaction_date,
+        row.transaction_time,
+        row.expense_income,
+      );
+    }
 
-  const transactions = [
-    { cc_num: '1234567890123456', merchant: 1, category: 'Electronics', amount: 200.50, transaction_num: 1001, transaction_date: '2023-01-10', transaction_time: '14:00:00', expense_income: false },
-    { cc_num: '6543210987654321', merchant: 2, category: 'Groceries', amount: 75.25, transaction_num: 1002, transaction_date: '2023-01-11', transaction_time: '10:30:00', expense_income: true }
-  ];
-  for (let transaction of transactions) {
-    await connection.query('INSERT INTO transactions SET ?', transaction);
+    console.log('CSV file successfully processed');
+  } catch (error) {
+    console.error('Error processing CSV file:', error);
   }
 }
+
+async function insertData(connection, cc_num, merchant, category, amount, transaction_num, transaction_date, transaction_time, expense_income) {
+  const query = `
+        INSERT INTO transactions (cc_num, merchant, category, amount, transaction_num, transaction_date, transaction_time, expense_income)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+  const values = [cc_num, merchant, category, amount, transaction_num, transaction_date, transaction_time, expense_income];
+  return new Promise((resolve, reject) => {
+    connection.query(query, values, (error, results) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve(results);
+    });
+  });
+}
+
+
+
+
 
 main();
