@@ -13,6 +13,8 @@ async function main() {
   try {
     connection = await getConnection();
     console.log(chalk.green('Connected'));
+    console.log(chalk.yellow('Fetching existing transactions data'));
+    await fetchTransactionsData(connection);
     console.log(chalk.yellow('Dropping existing tables'));
     await dropTableIfExists(connection, 'transactions');
     await dropTableIfExists(connection, 'accounts');
@@ -35,6 +37,15 @@ async function main() {
   } finally {
     if (connection) connection.release();
     process.exit();
+  }
+}
+
+async function fetchTransactionsData(connection) {
+  try {
+    const [rows] = await connection.query(`SELECT * FROM transactions LIMIT 0, 10000000`);
+    console.log('Transactions data:', rows);
+  } catch (error) {
+    console.error('Error fetching transactions:', error);
   }
 }
 
