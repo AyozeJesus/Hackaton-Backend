@@ -48,7 +48,7 @@ transactionRoutes.get('/accounts/:cc_num/expenses/total', authUser, getTotalExpe
 transactionRoutes.get('/accounts/:cc_num/incomes/total', authUser, getTotalIncomesByAccountController);
 
 // Gastos por categoría y cuenta
-transactionRoutes.get('', authUser, getExpensesByCategoryAndAccountController);
+transactionRoutes.get('/accounts/:cc_num/expenses/category/:category', authUser, getExpensesByCategoryAndAccountController);
 
 // Ingresos por categoría y cuenta
 transactionRoutes.get('/accounts/:cc_num/incomes/category/:category', authUser, getIncomesByCategoryAndAccountController);
