@@ -5,7 +5,8 @@ import bcrypt from 'bcrypt';
 import chalk from 'chalk';
 import fs from 'fs';
 import csv from 'csv-parser';
-import { log } from 'console';
+import mysql from 'mysql2/promise';
+  
 
 async function main() {
   let connection;
@@ -105,7 +106,6 @@ async function loadDataFromCSV(connection, filename) {
 
     for await (const row of stream.pipe(csv())) {
       await insertData(
-        connection,
         row.cc_num,
         row.merchant,
         row.category,
@@ -123,25 +123,31 @@ async function loadDataFromCSV(connection, filename) {
   }
 }
 
-async function insertData(connection, cc_num, merchant, category, amount, transaction_num, transaction_date, transaction_time, expense_income) {
+async function insertData(cc_num, merchant, category, amount, transaction_num, transaction_date, transaction_time, expense_income) {
+ 
+  const connection = await mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    database: 'backend-union',
+    password: 'Skybricks12'
+  });
+
   const query = `
         INSERT INTO transactions (cc_num, merchant, category, amount, transaction_num, transaction_date, transaction_time, expense_income)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
   const values = [cc_num, merchant, category, amount, transaction_num, transaction_date, transaction_time, expense_income];
-  return new Promise((resolve, reject) => {
-    connection.query(query, values, (error, results) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-      resolve(results);
-    });
-  });
+  
+  try {
+    await connection.query(query, values);
+    console.log("Data inserted successfully!");
+  } catch (error) {
+    console.error("Error inserting data:", error);
+  } finally {
+    connection.end();
+  }
+
 }
-
-
-
 
 
 main();
