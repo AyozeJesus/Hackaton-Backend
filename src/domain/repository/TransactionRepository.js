@@ -348,7 +348,13 @@ export class TransactionRepository {
         'SELECT * FROM transactions WHERE cc_num = ? AND transaction_date >= ? AND transaction_date <= ? ORDER BY transaction_date DESC',
         [cc_num, startDate, endDate],
       )
+      if (rows.length === 0) {
+        throw new Error('No transactions found');
+      }
       return rows
+    } catch (error) {
+      console.error('SQL Error:', error.message);
+      throw error;
     } finally {
       if (connection) {
         connection.release()

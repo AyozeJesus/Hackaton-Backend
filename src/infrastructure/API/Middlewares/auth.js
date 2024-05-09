@@ -4,7 +4,6 @@ export const authUser = (req, res, next) => {
   try {
     const { authorization } = req.headers
 
-    console.log(req.headers, "headers")
     if (!authorization) {
       throw generateError(
         'Unauthorized. You must be a registered user to perform this action.',

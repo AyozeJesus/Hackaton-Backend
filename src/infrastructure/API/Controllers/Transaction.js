@@ -185,14 +185,15 @@ export const getTotalIncomesByAccountController = async (req, res, next) => {
 
 export const listTransactionsByDateRangeAndAccountController = async (req, res, next) => {
   try {
-    const { startDate, endDate, cc_num } = req.query
+    const { startDate, endDate, cc_num } = req.query;
     const transactions = await transactionService.listTransactionsByDateRangeAndAccount(
       startDate,
       endDate,
-      cc_num,
-    )
-    res.status(200).json(transactions)
+      cc_num
+    );
+    res.status(200).json(transactions);
   } catch (err) {
-    next(err)
+    console.error('Error:', err.message);
+    res.status(404).json({ status: "Error", message: "Transaction not found." });
   }
 }
