@@ -126,10 +126,10 @@ async function loadDataFromCSV(connection, filename) {
 async function insertData(cc_num, merchant, category, amount, transaction_num, transaction_date, transaction_time, expense_income) {
  
   const connection = await mysql.createConnection({
-    host: 'localhost',
+    address: 'localhost',
     user: 'root',
+    password: process.env.DB_PASSWORD || 'Skybricks12',
     database: 'backend-union',
-    password: 'Skybricks12'
   });
 
   const query = `
