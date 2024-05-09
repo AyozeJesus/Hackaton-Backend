@@ -1,7 +1,7 @@
 import { PythonShell } from 'python-shell';
 
 export async function createExpensesPreventions(req, res) {
-    const { cc_num } = req.params;
+    const { cc_num } = req.body;
 
     const options = {
         mode: 'text',
@@ -20,8 +20,11 @@ export async function createExpensesPreventions(req, res) {
         res.status(500).json({ error: error.message })
     }
 }
+
 export async function createIncomesPreventions(req, res) {
-    const { cc_num } = req.params;
+    const { cc_num } = req.body;
+
+    console.log(cc_num)
 
     const options = {
         mode: 'text',
@@ -31,7 +34,7 @@ export async function createIncomesPreventions(req, res) {
     };
 
     try {
-        const messages = await PythonShell.run('read_pkl.py', options).then(messages => {
+        const messages = await PythonShell.run('read_pkl_incomes.py', options).then(messages => {
             // results is an array consisting of messages collected during execution
             res.status(200).json({ messages: messages });
             console.log(messages);
