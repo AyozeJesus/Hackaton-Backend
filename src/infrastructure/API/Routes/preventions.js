@@ -6,4 +6,6 @@ import { authUser } from '../Middlewares/auth.js'
 
 const preventionsRoutes = express.Router();
 
-transactionRoutes.get('/preventions', authUser, createPreventions);
+preventionsRoutes.get('/preventions', authUser, createPreventions);
+
+export { preventionsRoutes };
