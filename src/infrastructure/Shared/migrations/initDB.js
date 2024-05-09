@@ -344,49 +344,40 @@ async function loadDataFromCSV(connection, filename) {
   try {
     const stream = fs.createReadStream(filename);
 
+    // Crear la conexión fuera del bucle
+    const connection = await mysql.createConnection({
+      host: 'localhost',
+      user: 'root',
+      password: process.env.DB_PASSWORD || 'Skybricks12',
+      database: 'backend-union',
+    });
+
     for await (const row of stream.pipe(csv())) {
-      await insertData(
-        row.cc_num,
-        row.merchant,
-        row.category,
-        row.amount,
-        row.transaction_num,
-        row.transaction_date,
-        row.transaction_time,
-        row.expense_income,
-      );
+      await insertData(connection, row.cc_num, row.merchant, row.category, row.amount, row.transaction_num, row.transaction_date, row.transaction_time, row.expense_income);
     }
 
     console.log('CSV file successfully processed');
+    
+    // Cerrar la conexión después de procesar el archivo CSV
+    await connection.end();
   } catch (error) {
     console.error('Error processing CSV file:', error);
   }
 }
 
-async function insertData(cc_num, merchant, category, amount, transaction_num, transaction_date, transaction_time, expense_income) {
-
-  const connection = await mysql.createConnection({
-    address: 'localhost',
-    user: 'demo',
-    password: process.env.DB_PASSWORD || 'password',
-    database: 'backend-union',
-  });
-
+// Función para insertar datos en la base de datos
+async function insertData(connection, cc_num, merchant, category, amount, transaction_num, transaction_date, transaction_time, expense_income) {
   const query = `
-        INSERT INTO transactions (cc_num, merchant, category, amount, transaction_num, transaction_date, transaction_time, expense_income)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `;
+    INSERT INTO transactions (cc_num, merchant, category, amount, transaction_num, transaction_date, transaction_time, expense_income)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `;
   const values = [cc_num, merchant, category, amount, transaction_num, transaction_date, transaction_time, expense_income];
 
   try {
     await connection.query(query, values);
-    console.log("Data inserted successfully!");
   } catch (error) {
     console.error("Error inserting data:", error);
-  } finally {
-    connection.end();
   }
-
 }
 
 
