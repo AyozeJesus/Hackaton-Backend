@@ -41,6 +41,7 @@ export class TransactionRepository {
     }
   }
 
+
   async getTransactionByTransactionNum(transactionNum) {
     let connection
     try {
@@ -62,6 +63,183 @@ export class TransactionRepository {
     }
   }
 
+  async getExpensesByCategoryAndAccount(category, cc_num) {
+    let connection
+    try {
+      connection = await getConnection()
+      const [rows] = await connection.query(
+        'SELECT * FROM transactions WHERE category = ? AND cc_num = ? AND expense_income = 1 ORDER BY transaction_date DESC',
+        [category, cc_num],
+      )
+
+      if (rows.length === 0) {
+        throw generateError('No expenses found for this category.', 404)
+      }
+
+      return rows
+    } finally {
+      if (connection) {
+        connection.release()
+      }
+    }
+  }
+
+  async getIncomesByCategoryAndAccount(category, cc_num) {
+    let connection
+    try {
+      connection = await getConnection()
+      const [rows] = await connection.query(
+        'SELECT * FROM transactions WHERE category = ? AND cc_num = ? AND expense_income = 0 ORDER BY transaction_date DESC',
+        [category, cc_num],
+      )
+
+      if (rows.length === 0) {
+        throw generateError('No incomes found for this category.', 404)
+      }
+
+      return rows
+    } finally {
+      if (connection) {
+        connection.release()
+      }
+    }
+  }
+
+  async getTotalIncomesByCategoryAndAccount(category, cc_num) {
+    let connection
+    try {
+      connection = await getConnection()
+      const [rows] = await connection.query(
+        'SELECT SUM(amount) AS total FROM transactions WHERE category = ? AND cc_num = ? AND expense_income = 0',
+        [category, cc_num],
+      )
+
+      if (rows.length === 0) {
+        throw generateError('No incomes found for this category.', 404)
+      }
+
+      return rows[0]
+    } finally {
+      if (connection) {
+        connection.release()
+      }
+    }
+  }
+
+  async getTotalExpensesByCategoryAndAccount(category, cc_num) {
+    let connection
+    try {
+      connection = await getConnection()
+      const [rows] = await connection.query(
+        'SELECT SUM(amount) AS total FROM transactions WHERE category = ? AND cc_num = ? AND expense_income = 1',
+        [category, cc_num],
+      )
+
+      if (rows.length === 0) {
+        throw generateError('No expenses found for this category.', 404)
+      }
+
+      return rows[0]
+    } finally {
+      if (connection) {
+        connection.release()
+      }
+    }
+  }
+
+  async getExpensesByCategoryAndAccount(category, cc_num) {
+    let connection
+    try {
+      connection = await getConnection()
+      const [rows] = await connection.query(
+        'SELECT * FROM transactions WHERE category = ? AND cc_num = ? AND expense_income = 1 ORDER BY transaction_date DESC',
+        [category, cc_num],
+      )
+
+      if (rows.length === 0) {
+        throw generateError('No expenses found for this category.', 404)
+      }
+
+      return rows
+    } finally {
+      if (connection) {
+        connection.release()
+      }
+    }
+  }
+
+  async getTransactionsByAccount(cc_num) {
+    let connection
+    try {
+      connection = await getConnection()
+      const [rows] = await connection.query(
+        'SELECT * FROM transactions WHERE cc_num = ? ORDER BY transaction_date DESC',
+        [cc_num],
+      )
+
+      if (rows.length === 0) {
+        throw generateError('No transactions found for this account.', 404)
+      }
+
+      return rows
+    } finally {
+      if (connection) {
+        connection.release()
+      }
+    }
+  }
+
+  async getExpensesByAccount(cc_num) {
+    let connection;
+    try {
+      connection = await getConnection();
+      const query = `
+            SELECT * FROM transactions
+            WHERE cc_num = ? AND expense_income = 1
+            ORDER BY transaction_date DESC;
+        `;
+      const [rows] = await connection.query(query, [cc_num]);
+
+      if (rows.length === 0) {
+        throw generateError('No expenses found for this account.', 404);
+      }
+
+      return rows;
+    } catch (error) {
+      console.error('Error fetching expenses:', error);
+      throw error;
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  }
+
+  async getIncomesByAccount(cc_num) {
+    let connection;
+    try {
+      connection = await getConnection();
+      const query = `
+            SELECT * FROM transactions
+            WHERE cc_num = ? AND expense_income = 0
+            ORDER BY transaction_date DESC;
+        `;
+      const [rows] = await connection.query(query, [cc_num]);
+
+      if (rows.length === 0) {
+        throw generateError('No incomes found for this account.', 404);
+      }
+
+      return rows;
+    } catch (error) {
+      console.error('Error fetching incomes:', error);
+      throw error;
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  }
   async getTransactionById(transaction_id) {
     let connection
     try {
@@ -162,13 +340,13 @@ export class TransactionRepository {
     }
   }
 
-  async listTransactionsByDateRange(transaction_id, startDate, endDate) {
+  async listTransactionsByDateRangeAndAccount(startDate, endDate, cc_num) {
     let connection
     try {
       connection = await getConnection()
       const [rows] = await connection.query(
-        'SELECT * FROM transactions WHERE transaction_id = ? AND transaction_date BETWEEN ? AND ? ORDER BY transaction_date DESC',
-        [transaction_id, startDate, endDate],
+        'SELECT * FROM transactions WHERE cc_num = ? AND transaction_date >= ? AND transaction_date <= ? ORDER BY transaction_date DESC',
+        [cc_num, startDate, endDate],
       )
       return rows
     } finally {

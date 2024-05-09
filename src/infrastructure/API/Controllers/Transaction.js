@@ -24,6 +24,16 @@ export const createTransactionController = async (req, res, next) => {
   }
 }
 
+export const getTransactionsByAccountController = async (req, res, next) => {
+  try {
+    const cc_num = req.params.cc_num;
+    const transactions = await transactionService.getTransactionsByAccount(cc_num);
+    res.status(200).json(transactions);
+  } catch (err) {
+    next(err);
+  }
+}
+
 export const getTransactionByIdController = async (req, res, next) => {
   try {
     const transaction = await transactionService.getTransactionById(
@@ -71,14 +81,115 @@ export const listTransactionsByCategoryController = async (req, res, next) => {
   }
 }
 
-export const listTransactionsByDateRangeController = async (req, res, next) => {
+export const getExpensesByAccountController = async (req, res, next) => {
   try {
-    const { transaction_id } = req.params
-    const { startDate, endDate } = req.query
-    const transactions = await transactionService.listTransactionsByDateRange(
-      transaction_id,
+    const cc_num = req.params.cc_num;
+    const expenses = await transactionService.getExpensesByAccount(cc_num);
+    res.status(200).json(expenses);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getIncomesByAccountController = async (req, res, next) => {
+  try {
+    const cc_num = req.params.cc_num;
+    const incomes = await transactionService.getIncomesByAccount(cc_num);
+    res.status(200).json(incomes);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getTotalExpensesByAccountController = async (req, res, next) => {
+  try {
+    const cc_num = req.params.cc_num;
+    const totalExpenses = await transactionService.getTotalExpensesByAccount(cc_num);
+    res.json({ totalExpenses });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllIncomesByCategoryAndAccountController = async (req, res, next) => {
+  try {
+    const { category, cc_num } = req.params
+    const incomes = await transactionService.getIncomesByCategoryAndAccount(
+      category,
+      cc_num,
+    )
+    res.status(200).json(incomes)
+  } catch (err) {
+    next(err)
+  }
+}
+
+export const getAllExpensesByCategoryAndAccountController = async (req, res, next) => {
+  try {
+    const { category, cc_num } = req.params
+    const expenses = await transactionService.getExpensesByCategoryAndAccount(
+      category,
+      cc_num,
+    )
+    res.status(200).json(expenses)
+  } catch (err) {
+    next(err)
+  }
+}
+
+export const getExpensesByCategoryController = async (req, res, next) => {
+  try {
+    const category = req.params.category;
+    const expenses = await transactionService.getExpensesByCategory(category);
+    res.status(200).json(expenses);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export const getIncomesByCategoryAndAccountController = async (req, res, next) => {
+  try {
+    const { category, cc_num } = req.params
+    const incomes = await transactionService.getIncomesByCategoryAndAccount(
+      category,
+      cc_num,
+    )
+    res.status(200).json(incomes)
+  } catch (err) {
+    next(err)
+  }
+}
+
+export const getExpensesByCategoryAndAccountController = async (req, res, next) => {
+  try {
+    const { category, cc_num } = req.params
+    const expenses = await transactionService.getExpensesByCategoryAndAccount(
+      category,
+      cc_num,
+    )
+    res.status(200).json(expenses)
+  } catch (err) {
+    next(err)
+  }
+}
+
+export const getTotalIncomesByAccountController = async (req, res, next) => {
+  try {
+    const cc_num = req.params.cc_num;
+    const totalIncomes = await transactionService.getTotalIncomesByAccount(cc_num);
+    res.json({ totalIncomes });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const listTransactionsByDateRangeAndAccountController = async (req, res, next) => {
+  try {
+    const { startDate, endDate, cc_num } = req.query
+    const transactions = await transactionService.listTransactionsByDateRangeAndAccount(
       startDate,
       endDate,
+      cc_num,
     )
     res.status(200).json(transactions)
   } catch (err) {
