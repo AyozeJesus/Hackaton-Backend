@@ -6,6 +6,9 @@ import { userRoutes } from './Routes/users.js'
 import { accountRoutes } from './Routes/accounts.js'
 import chalk from 'chalk'
 import { transactionRoutes } from './Routes/transactions.js'
+import { preventionsRoutes } from './Routes/preventions.js'
+import path from 'path'
+import PythonShell from 'python-shell';
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -21,6 +24,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use('/', userRoutes)
 app.use(`/`, transactionRoutes)
 app.use(`/`, accountRoutes)
+app.use('/', preventionsRoutes )
 
 // Middleware para el error 404
 app.use((req, res) => {
